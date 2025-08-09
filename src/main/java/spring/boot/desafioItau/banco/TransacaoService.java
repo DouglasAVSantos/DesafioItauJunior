@@ -1,15 +1,16 @@
 package spring.boot.desafioItau.banco;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import spring.boot.desafioItau.model.Transacao;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.DoubleSummaryStatistics;
 import java.util.List;
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
+@Service
 public class TransacaoService {
 
     public final List<Transacao> listaDeTransacoes = new ArrayList<>();
