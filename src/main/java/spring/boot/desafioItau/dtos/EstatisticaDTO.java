@@ -6,7 +6,7 @@ import lombok.Setter;
 import java.util.DoubleSummaryStatistics;
 @Getter
 @Setter
-public class Retorno {
+public class EstatisticaDTO {
 
     Double min;
     Double max;
@@ -14,7 +14,7 @@ public class Retorno {
     Double sum;
     Long count;
 
-    public Retorno(){
+    public EstatisticaDTO(){
         this.min=0.0;
         this.max=0.0;
         this.count=0L;
@@ -22,7 +22,7 @@ public class Retorno {
         this.avg=0.0;
     }
 
-    public Retorno(
+    public EstatisticaDTO(
             DoubleSummaryStatistics dto
     ){
         this.min= dto.getMin();

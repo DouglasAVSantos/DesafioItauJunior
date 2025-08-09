@@ -1,20 +1,23 @@
 package spring.boot.desafioItau.Controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import spring.boot.desafioItau.banco.Banco;
-import spring.boot.desafioItau.dtos.Retorno;
+import spring.boot.desafioItau.banco.TransacaoService;
+import spring.boot.desafioItau.dtos.EstatisticaDTO;
 import spring.boot.desafioItau.dtos.TransacaoDTO;
 import spring.boot.desafioItau.model.Transacao;
 
-import java.time.OffsetDateTime;
 import java.util.DoubleSummaryStatistics;
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 public class TransacaoController {
-    private List<Transacao> banco = new Banco().getListaDeTransacoes();
+
+    private  final TransacaoService transacaoService;
+
 
     @PostMapping("/transacao")
     ResponseEntity<Void> cadastraTransacao(@RequestBody(required = false) TransacaoDTO body) {
@@ -24,45 +27,34 @@ public class TransacaoController {
         if (body.valor() == null || body.dataHora() == null) {
             return ResponseEntity.unprocessableEntity().build();
         } else {
-            if (!body.dataHora().isAfter(OffsetDateTime.now())) {
-                Transacao t = new Transacao(body.valor(), body.dataHora());
-                Banco transacoes = new Banco();
-                banco.add(t);
-                System.out.println("adicionado transacao com sucesso");
+            if (transacaoService.verificaValorHora(body.dataHora(),body.valor())) {
                 return ResponseEntity.ok().build();
             } else {
-                System.out.println(body.dataHora().isAfter(OffsetDateTime.now()));
                 return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
             }
         }
-
     }
 
     @DeleteMapping("/transacao")
     ResponseEntity<Void> apagaTodosDados() {
-        banco.clear();
+        transacaoService.getListaDeTransacoes().clear();
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/popular")
     ResponseEntity<Void> populaBanco() {
-        Banco a = new Banco();
-        a.popular();
+        transacaoService.popular();
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/visualizar")
-    Banco visualizar() {
-        Banco bancoCompleto = new Banco();
-        return bancoCompleto;
+    List<Transacao> visualizar() {
+        return transacaoService.getListaDeTransacoes();
     }
 
     @GetMapping("/estatistica")
-    Retorno retornaEstatistica() {
-        DoubleSummaryStatistics status = banco.stream().filter(c ->
-                c.getDataHora().isAfter(OffsetDateTime.now().minusSeconds(60))
-        ).mapToDouble(Transacao::getValor).summaryStatistics();
-
-        return status.getCount() > 0 ? new Retorno(status) : new Retorno();
+    EstatisticaDTO retornaEstatistica() {
+        DoubleSummaryStatistics status = transacaoService.estatistica(60);
+        return status.getCount() > 0 ? new EstatisticaDTO(status) : new EstatisticaDTO();
     }
 }
