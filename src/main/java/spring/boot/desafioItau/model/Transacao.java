@@ -1,17 +1,14 @@
 package spring.boot.desafioItau.model;
 
-import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Transacao {
     Double valor;
     OffsetDateTime dataHora;

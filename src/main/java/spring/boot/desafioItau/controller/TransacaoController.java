@@ -1,39 +1,38 @@
-package spring.boot.desafioItau.Controller;
+package spring.boot.desafioItau.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import spring.boot.desafioItau.banco.TransacaoService;
-import spring.boot.desafioItau.dtos.EstatisticaDTO;
-import spring.boot.desafioItau.dtos.TransacaoDTO;
+import spring.boot.desafioItau.controller.dtos.TransacaoDTO;
 import spring.boot.desafioItau.model.Transacao;
+import spring.boot.desafioItau.service.TransacaoService;
 
-import java.util.DoubleSummaryStatistics;
 import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
 public class TransacaoController {
 
-    private  final TransacaoService transacaoService;
-
+    private final TransacaoService transacaoService;
+    private Logger log = LoggerFactory.getLogger(TransacaoController.class);
 
     @PostMapping("/transacao")
     ResponseEntity<Void> cadastraTransacao(@RequestBody(required = false) TransacaoDTO body) {
         if (body == null) {
+            log.error("Json Body não pode ser nulo");
             return ResponseEntity.badRequest().build();
         }
         if (body.valor() == null || body.dataHora() == null) {
+            log.error("Existem campos nulos \nValor: " + body.valor() + "\nData: " + body.dataHora());
             return ResponseEntity.unprocessableEntity().build();
         } else {
-            if (transacaoService.verificaValorHora(body.dataHora(),body.valor())) {
-                return ResponseEntity.ok().build();
-            } else {
-                return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
-            }
+            transacaoService.adicionarTransacao(new Transacao(body.valor(), body.dataHora()));
+            return ResponseEntity.ok().build();
         }
     }
+
 
     @DeleteMapping("/transacao")
     ResponseEntity<Void> apagaTodosDados() {
@@ -43,7 +42,7 @@ public class TransacaoController {
 
     @GetMapping("/popular")
     ResponseEntity<Void> populaBanco() {
-        transacaoService.popular();
+        transacaoService.popularListaDeTransacoes();
         return ResponseEntity.ok().build();
     }
 
@@ -52,9 +51,5 @@ public class TransacaoController {
         return transacaoService.getListaDeTransacoes();
     }
 
-    @GetMapping("/estatistica")
-    EstatisticaDTO retornaEstatistica() {
-        DoubleSummaryStatistics status = transacaoService.estatistica(60);
-        return status.getCount() > 0 ? new EstatisticaDTO(status) : new EstatisticaDTO();
-    }
+
 }

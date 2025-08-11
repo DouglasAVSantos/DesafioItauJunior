@@ -1,6 +1,7 @@
-package spring.boot.desafioItau.dtos;
+package spring.boot.desafioItau.controller.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.Min;
 
 import java.time.OffsetDateTime;
 
