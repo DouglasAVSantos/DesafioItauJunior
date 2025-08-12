@@ -4,12 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import spring.boot.desafioItau.controller.dtos.TransacaoDTO;
 import spring.boot.desafioItau.exception.UnprocessableEntity;
 import spring.boot.desafioItau.model.Transacao;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
