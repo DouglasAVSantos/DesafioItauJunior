@@ -1,7 +1,6 @@
 package spring.boot.desafioItau.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -18,14 +17,17 @@ public class EstatisticasService {
     private Logger log = LoggerFactory.getLogger(EstatisticasService.class);
 
     public DoubleSummaryStatistics getEstatistica(Integer intervaloEmSegundos) {
-        log.info("Buscando Estatisticas nos ultimos "+intervaloEmSegundos+" segundos");
+        Long inicio = System.currentTimeMillis();
+        log.info("Buscando Estatisticas nos ultimos " + intervaloEmSegundos + " segundos");
 
         DoubleSummaryStatistics status = transacaoService.getListaDeTransacoes()
                 .stream()
                 .filter(c ->
                         c.getDataHora().isAfter(OffsetDateTime.now().minusSeconds(intervaloEmSegundos))
                 ).mapToDouble(Transacao::getValor).summaryStatistics();
-            log.info("Estatisticas retornadas com sucesso!");
+        Long termino = System.currentTimeMillis();
+        log.info("O tempo de processamento para retornar as estatisticas foi de " + (termino - inicio) + " ms");
+        log.info("Estatisticas retornadas com sucesso!");
         return status;
     }
 }
