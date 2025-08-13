@@ -4,14 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import spring.boot.desafioItau.controller.dtos.TransacaoDTO;
 import spring.boot.desafioItau.exception.UnprocessableEntity;
 import spring.boot.desafioItau.model.Transacao;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -39,6 +37,7 @@ public class TransacaoService {
             throw new UnprocessableEntity("A transação não deve ter data e hora posterior a data e hora atual");
 
         }
+        transacao.setValor(transacao.getValor()+5);
         listaDeTransacoes.add(transacao);
         log.info("Transação Adicionada com sucesso");
     }

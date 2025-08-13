@@ -12,4 +12,7 @@ import java.time.OffsetDateTime;
 public class Transacao {
     Double valor;
     OffsetDateTime dataHora;
+
+    public Transacao(long l, double v, OffsetDateTime offsetDateTime) {
+    }
 }
