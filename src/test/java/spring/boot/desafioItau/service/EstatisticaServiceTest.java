@@ -20,11 +20,12 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class EstatisticaServiceTest {
 
+    @InjectMocks
+    private EstatisticasService estatisticasService;
+
     @Mock
     private TransacaoService transacaoService;
 
-    @InjectMocks
-    private EstatisticasService estatisticasService;
 
     @BeforeEach
     void setup() {

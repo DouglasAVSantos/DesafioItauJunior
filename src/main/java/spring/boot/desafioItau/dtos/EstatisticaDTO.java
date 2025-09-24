@@ -1,4 +1,4 @@
-package spring.boot.desafioItau.controller.dtos;
+package spring.boot.desafioItau.dtos;
 
 import lombok.Getter;
 import lombok.Setter;

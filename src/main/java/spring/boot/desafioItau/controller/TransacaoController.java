@@ -9,8 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import spring.boot.desafioItau.controller.dtos.TransacaoDTO;
-import spring.boot.desafioItau.model.Transacao;
+import spring.boot.desafioItau.dtos.TransacaoDTO;
 import spring.boot.desafioItau.service.TransacaoService;
 
 import java.util.List;
@@ -27,10 +26,10 @@ public class TransacaoController {
     @PostMapping
     @Operation(description = "EndPoint responsável por cadastrar transações.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "201",description = "Transação criada com sucesso."),
-        @ApiResponse(responseCode = "400",description = "O body da requisição esta vazio."),
-        @ApiResponse(responseCode = "422",description = "Existem campos que não atendem aos requisitos de transação."),
-        @ApiResponse(responseCode = "500",description = "Erro interno do servidor.")
+            @ApiResponse(responseCode = "201", description = "Transação criada com sucesso."),
+            @ApiResponse(responseCode = "400", description = "O body da requisição esta vazio."),
+            @ApiResponse(responseCode = "422", description = "Existem campos que não atendem aos requisitos de transação."),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor.")
     }
     )
     ResponseEntity<Void> cadastraTransacao(@RequestBody(required = false) TransacaoDTO body) {
@@ -42,7 +41,7 @@ public class TransacaoController {
             log.error("Existem campos nulos \nValor: " + body.getValor() + "\nData: " + body.getDataHora());
             return ResponseEntity.unprocessableEntity().build();
         } else {
-            transacaoService.adicionarTransacao(new Transacao(body.getValor(), body.getDataHora()));
+            transacaoService.adicionarTransacao(body);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         }
     }
@@ -51,8 +50,8 @@ public class TransacaoController {
     @DeleteMapping
     @Operation(description = "EndPoint responsável por deletar todas as transações cadastradas.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",description = "Todas as transações foram deletadas com sucesso."),
-            @ApiResponse(responseCode = "500",description = "Erro interno do servidor.")
+            @ApiResponse(responseCode = "200", description = "Todas as transações foram deletadas com sucesso."),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor.")
     })
     ResponseEntity<Void> apagaTodosDados() {
         transacaoService.getListaDeTransacoes().clear();
@@ -62,8 +61,8 @@ public class TransacaoController {
     @GetMapping("/popular")
     @Operation(description = "EndPoint responsável por criar transações para fins de testes \nEle cria 10 transações.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",description = "Todas as transações foram criadas com sucesso."),
-            @ApiResponse(responseCode = "500",description = "Erro interno do servidor.")
+            @ApiResponse(responseCode = "200", description = "Todas as transações foram criadas com sucesso."),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor.")
     })
     ResponseEntity<Void> populaBanco() {
         transacaoService.popularListaDeTransacoes();
@@ -73,12 +72,12 @@ public class TransacaoController {
     @GetMapping("/visualizar")
     @Operation(description = "EndPoint responsável por visualizar todas as transações cadastradas.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",description = "Todas as transações foram retornadas com sucesso."),
-            @ApiResponse(responseCode = "500",description = "Erro interno do servidor.")
+            @ApiResponse(responseCode = "200", description = "Todas as transações foram retornadas com sucesso."),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor.")
     })
     ResponseEntity<List<TransacaoDTO>> visualizar() {
         return ResponseEntity.ok(transacaoService.getListaDeTransacoes().stream()
-                .map(m->new TransacaoDTO(m.getValor(),m.getDataHora())).collect(Collectors.toList()));
+                .map(m -> new TransacaoDTO(m.getValor(), m.getDataHora())).toList());
     }
 
 

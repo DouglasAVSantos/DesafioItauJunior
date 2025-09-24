@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import spring.boot.desafioItau.dtos.TransacaoDTO;
 import spring.boot.desafioItau.exception.UnprocessableEntity;
 import spring.boot.desafioItau.model.Transacao;
 
@@ -26,19 +27,19 @@ public class TransacaoService {
         log.info("Lista Teste Completa.");
     }
 
-    public void adicionarTransacao(Transacao transacao) {
-        log.info("Iniciada a verificação para adicionar a transação: " + transacao);
-        if (transacao.getValor() < 0) {
+    public void adicionarTransacao(TransacaoDTO dto) {
+        log.info("Iniciada a verificação para adicionar a transação: " + dto);
+        if (dto.getValor() < 0) {
             log.error("A transação deve ter valor maior ou igual a 0");
             throw new UnprocessableEntity("A transação deve ter valor maior ou igual a 0");
         }
-        if (transacao.getDataHora().isAfter(OffsetDateTime.now())) {
+        if (dto.getDataHora().isAfter(OffsetDateTime.now())) {
             log.error("A transação não deve ter data e hora posterior a data e hora atual");
             throw new UnprocessableEntity("A transação não deve ter data e hora posterior a data e hora atual");
 
         }
-        transacao.setValor(transacao.getValor()+5);
-        listaDeTransacoes.add(transacao);
+        dto.setValor(dto.getValor()+5);
+        listaDeTransacoes.add(new Transacao(dto));
         log.info("Transação Adicionada com sucesso");
     }
 
