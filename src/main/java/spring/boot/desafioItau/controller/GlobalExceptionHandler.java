@@ -6,21 +6,27 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import spring.boot.desafioItau.exception.NotFound;
 import spring.boot.desafioItau.exception.UnprocessableEntity;
 
 @ControllerAdvice
-    public class GlobalExceptionHandler {
+public class GlobalExceptionHandler {
 
-        @ExceptionHandler(UnprocessableEntity.class)
-        @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-        public ResponseEntity<String> handleUnprocessableEntity(UnprocessableEntity e){
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("Erro: " + e.getMessage());
-        }
-
-        @ExceptionHandler(Exception.class)
-        @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-        public ResponseEntity<String> handleUnprocessableEntity(Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro: " + e.getMessage());
-        }
+    @ExceptionHandler(UnprocessableEntity.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ResponseEntity<String> handleUnprocessableEntity(UnprocessableEntity e) {
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("Erro: " + e.getMessage());
     }
+
+    @ExceptionHandler(NotFound.class)
+    public ResponseEntity<String> handleNotFound(NotFound ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Erro: " + ex.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<String> handleUnprocessableEntity(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro: " + e.getMessage());
+    }
+}
 
