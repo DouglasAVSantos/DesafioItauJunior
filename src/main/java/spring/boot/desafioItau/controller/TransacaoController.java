@@ -13,7 +13,6 @@ import spring.boot.desafioItau.dtos.TransacaoDTO;
 import spring.boot.desafioItau.service.TransacaoService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -54,7 +53,7 @@ public class TransacaoController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor.")
     })
     ResponseEntity<Void> apagaTodosDados() {
-        transacaoService.getListaDeTransacoes().clear();
+        transacaoService.deleteAll();
         return ResponseEntity.ok().build();
     }
 
