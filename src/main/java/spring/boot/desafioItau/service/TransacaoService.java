@@ -1,5 +1,6 @@
 package spring.boot.desafioItau.service;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,22 +8,23 @@ import org.springframework.stereotype.Service;
 import spring.boot.desafioItau.dtos.TransacaoDTO;
 import spring.boot.desafioItau.exception.UnprocessableEntity;
 import spring.boot.desafioItau.model.Transacao;
+import spring.boot.desafioItau.repository.TransacaoRepository;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
 @Service
+@Getter
 public class TransacaoService {
 
-    private final List<Transacao> listaDeTransacoes = new ArrayList<>();
+    private final TransacaoRepository repository;
     private final Logger log = LoggerFactory.getLogger(TransacaoService.class);
 
     public void popularListaDeTransacoes() {
         log.info("Populando a lista de Transações para testes");
         for (int i = 0; i < 10; i++) {
-            listaDeTransacoes.add(new Transacao(Math.random(), OffsetDateTime.now()));
+            repository.save(Transacao.builder().valor(Math.random()).dataHora(OffsetDateTime.now()).build());
         }
         log.info("Lista Teste Completa.");
     }
@@ -38,13 +40,17 @@ public class TransacaoService {
             throw new UnprocessableEntity("A transação não deve ter data e hora posterior a data e hora atual");
 
         }
-        dto.setValor(dto.getValor()+5);
-        listaDeTransacoes.add(new Transacao(dto));
+        dto.setValor(dto.getValor() + 5);
+        repository.save(new Transacao(dto));
         log.info("Transação Adicionada com sucesso");
     }
 
+    public void deleteAll() {
+        repository.deleteAll();
+    }
+
     public List<Transacao> getListaDeTransacoes() {
-        return listaDeTransacoes;
+        return repository.findAll();
     }
 
 
